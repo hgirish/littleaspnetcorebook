@@ -1,6 +1,10 @@
 ﻿$(document).ready(function () {
     $('.datepicker').datepicker();
     $('#add-item-button').on('click', addItem);
+
+    $('.done-checkbox').on('click', function (e) {
+        markCompleted(e.target);
+    });
 });
 
 function addItem() {
@@ -18,4 +22,14 @@ function addItem() {
                 $('#add-item-error').show();
             }
         })
+}
+
+
+function markCompleted(checkbox) {
+    checkbox.disabled = true;
+
+    $.post('/Todo/MarkDone', { id: checkbox.name }, function () {
+        var row = checkbox.parentElement.parentElement;
+        $(row).addClass('done');
+    });
 }

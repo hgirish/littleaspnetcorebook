@@ -42,12 +42,16 @@ namespace AspNetCoreTodo
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+            UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+
+                EnsureRolesAsync(roleManager).Wait();
+                EnsureTestAdminAsync(userManager).Wait();
             }
             else
             {
@@ -64,6 +68,33 @@ namespace AspNetCoreTodo
                     name: "default",
                     template: "{controller=Todo}/{action=Index}/{id?}");
             });
+        }
+
+        private static async Task EnsureRolesAsync(RoleManager<IdentityRole> roleManager)
+        {
+            var alreadyExists = await roleManager.RoleExistsAsync(Constants.AdministratorRole);
+            if (alreadyExists)
+            {
+                return;
+            }
+            await roleManager.CreateAsync(new IdentityRole(Constants.AdministratorRole));
+        }
+
+        private static async Task EnsureTestAdminAsync(UserManager<ApplicationUser> userManager)
+        {
+            const string adminEmail = "admin@todo.local";
+            const string adminPassword = "NotSecure123!!";
+            var testAdmin = await userManager.Users
+                .Where(x => x.UserName == adminEmail)
+                .SingleOrDefaultAsync();
+
+            if (testAdmin != null)
+            {
+                return;
+            }
+            testAdmin = new ApplicationUser { UserName = adminEmail, Email = adminEmail };
+            await userManager.CreateAsync(testAdmin, adminPassword);
+            await userManager.AddToRoleAsync(testAdmin, Constants.AdministratorRole);
         }
     }
 }
