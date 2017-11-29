@@ -36,6 +36,8 @@ namespace AspNetCoreTodo
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
+            services.AddScoped<ITodoItemService, FakeTodoItemService>();
+
             services.AddMvc();
         }
 
@@ -60,7 +62,7 @@ namespace AspNetCoreTodo
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Todo}/{action=Index}/{id?}");
             });
         }
     }
