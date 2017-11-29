@@ -2,6 +2,7 @@ using AspNetCoreTodo.Models;
 using AspNetCoreTodo.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AspNetCoreTodo.Controllers
 {
@@ -17,6 +18,21 @@ namespace AspNetCoreTodo.Controllers
             var items =  await _todoItemService.GetIncompleteItemsAsync();
             var viewModel = new TodoViewModel { Items = items };
             return View(viewModel);
+        }
+
+        public async Task<IActionResult> AddItem(NewTodoItem newItem)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var successful = await _todoItemService.AddItemAsync(newItem);
+
+            if (!successful)
+            {
+                return BadRequest(new { error = "Could not add item" });
+            }
+            return Ok();
         }
     }
 }

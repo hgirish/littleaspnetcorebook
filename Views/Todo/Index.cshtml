@@ -4,7 +4,10 @@
 @{
     ViewData["Title"] = "Manage your todo list";
 }
+@section head{ 
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
+}
 <div class="panel panel-default todo-panel">
     <div class="panel-heading">@ViewData["Title"]</div>
 
@@ -35,7 +38,12 @@
             <div class="text-danger" id="add-item-error"></div>
             <label for="add-item-title">Add a new item</label>
             <input id="add-item-title" />
+            <input id="add-item-dueAt" class="datepicker" />
             <button type="button" id="add-item-button">Add</button>
         </form>
     </div>
 </div> 
+
+@section Scripts { 
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+}
