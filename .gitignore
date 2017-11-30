@@ -314,7 +314,7 @@ OpenCover/
 # Azure Stream Analytics local run output 
 ASALocalRun/
 
-wwwroot/lib/
+**/wwwroot/lib/
 .vscode/
 app.db
 appsettings.Development.json
